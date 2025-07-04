@@ -24,10 +24,10 @@ def get_turkey_time():
     return datetime.now(TURKEY_TZ)
 
 # GitHub Actions environment variables'tan config al
-TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-CHAT_ID = os.getenv('CHAT_ID')
-USERNAME = os.getenv('USERNAME')
-PASSWORD = os.getenv('PASSWORD')
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
+CHAT_ID = os.getenv('CHAT_ID', '')
+USERNAME = os.getenv('USERNAME', '')
+PASSWORD = os.getenv('PASSWORD', '')
 BASE_URL = os.getenv('BASE_URL', 'https://ielts.idp.com/book/IELTS')
 COUNTRY_ID = os.getenv('COUNTRY_ID', '212')
 LOCATION = os.getenv('LOCATION', 'Ankara')
@@ -40,9 +40,22 @@ if target_months_str and target_months_str.strip():
 else:
     TARGET_MONTHS = [7, 8]  # Default: Temmuz ve Ağustos
 
-TARGET_YEAR = int(os.getenv('TARGET_YEAR', '2025'))
+# TARGET_YEAR için güvenli parsing
+target_year_str = os.getenv('TARGET_YEAR', '2025')
+if target_year_str and target_year_str.strip():
+    TARGET_YEAR = int(target_year_str)
+else:
+    TARGET_YEAR = 2025
+
 HEADLESS_MODE = os.getenv('HEADLESS_MODE', 'True').lower() == 'true'
-IMPLICIT_WAIT = int(os.getenv('IMPLICIT_WAIT', '10'))
+
+# IMPLICIT_WAIT için güvenli parsing
+implicit_wait_str = os.getenv('IMPLICIT_WAIT', '10')
+if implicit_wait_str and implicit_wait_str.strip():
+    IMPLICIT_WAIT = int(implicit_wait_str)
+else:
+    IMPLICIT_WAIT = 10
+
 ENABLE_POSITIVE_NOTIFICATIONS = os.getenv('ENABLE_POSITIVE_NOTIFICATIONS', 'True').lower() == 'true'
 ENABLE_NEGATIVE_NOTIFICATIONS = os.getenv('ENABLE_NEGATIVE_NOTIFICATIONS', 'True').lower() == 'true'
 
