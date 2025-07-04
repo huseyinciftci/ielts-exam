@@ -1,0 +1,56 @@
+name: IELTS Date Checker
+
+on:
+  # Her 10 dakikada bir çalıştır
+  schedule:
+    - cron: '*/10 * * * *'
+  
+  # Manuel olarak da çalıştırılabilir
+  workflow_dispatch:
+  
+  # Test için push ile de çalışsın
+  push:
+    branches: [ main ]
+
+jobs:
+  check-ielts-dates:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Set up Chrome
+      uses: browser-actions/setup-chrome@latest
+      with:
+        chrome-version: stable
+    
+    - name: Run IELTS checker
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        CHAT_ID: ${{ secrets.CHAT_ID }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+        BASE_URL: ${{ secrets.BASE_URL }}
+        COUNTRY_ID: ${{ secrets.COUNTRY_ID }}
+        LOCATION: ${{ secrets.LOCATION }}
+        TEST_TYPE: ${{ secrets.TEST_TYPE }}
+        TARGET_MONTHS: ${{ secrets.TARGET_MONTHS }}
+        TARGET_YEAR: ${{ secrets.TARGET_YEAR }}
+        CHECK_INTERVAL_MINUTES: ${{ secrets.CHECK_INTERVAL_MINUTES }}
+        HEADLESS_MODE: "True"
+        IMPLICIT_WAIT: ${{ secrets.IMPLICIT_WAIT }}
+        ENABLE_POSITIVE_NOTIFICATIONS: ${{ secrets.ENABLE_POSITIVE_NOTIFICATIONS }}
+        ENABLE_NEGATIVE_NOTIFICATIONS: ${{ secrets.ENABLE_NEGATIVE_NOTIFICATIONS }}
+      run: |
+        python ielts_single_check.py 
